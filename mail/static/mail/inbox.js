@@ -74,41 +74,39 @@ function load_mailbox(mailbox) {
     console.log(emails);
     
     // Create a new element
-    emails.forEach(element => {
+    emails.forEach(email => {
       const tableRow = document.createElement('tr');
-      const email = document.createElement('td');
+      const emailCell = document.createElement('td');
       const subject = document.createElement('td');
       const timestamp = document.createElement('td');
       const action = document.createElement('td')
       const button = document.createElement('button');
 
       // Adding all necessaury values from element to the table in div #emails-view
-      if (mailbox == 'archive' && element.archived) {
-        email.innerHTML = element.sender;
-        subject.innerHTML = element.subject;
-        timestamp.innerHTML = element.timestamp;
+      emailCell.innerHTML = email.sender;
+      subject.innerHTML = email.subject;
+      timestamp.innerHTML = email.timestamp;
+
+      if (mailbox === 'inbox' && !email.archived) {
+        button.innerText = 'Archive';
+        button.onclick = () => archive_email(email.id, true);
+      } else if (mailbox === 'archive' && email.archived) {
         button.innerText = 'Unarchive';
-      } else if (!element.archived) {
-        if (mailbox == 'inbox') {
-          email.innerHTML = element.sender
-          button.innerText = 'Archive';
-        } else {
-          email.innerHTML = element.recipients.join(', ');
-        }
-        subject.innerHTML = element.subject;
-        timestamp.innerHTML = element.timestamp;
+        button.onclick = () => archive_email(email.id, false);
       }
-      // Append button to action
-      action.appendChild(button);
-      // Append all td to tableRow
-      tableRow.append(email, subject, timestamp, action);
+
+      if (mailbox !== 'sent') {
+        action.appendChild(button);
+      }
+      
+      tableRow.append(emailCell, subject, timestamp, action);
 
       // Change background color if email has been read
-      if (!element.read) {
+      if (!email.read) {
         tableRow.style.backgroundColor = '#f2f6fc';
       }
       // Adds an event handler
-      tableRow.onclick = () => load_email(element.id);
+      tableRow.onclick = () => load_email(email.id);
       // Add div to page
       document.querySelector('#table-row').append(tableRow);
     });
@@ -156,23 +154,15 @@ function change_readValue(email_id) {
   }
 )}
 
-function archive_email(email_id) {
+function archive_email(email_id, archived) {
   fetch(`/emails/${email_id}`, {
     method: 'PUT',
     body: JSON.stringify({
-      archived: true
+      archived: archived
     })
-  }
-)}
-
-function unarchive_email(email_id) {
-  fetch(`/emails/${email_id}`, {
-    method: 'PUT',
-    body: JSON.stringify({
-      archived: false
-    })
-  }
-)}
+  })
+  .then(() => load_mailbox('inbox'));
+}
 
 
 
