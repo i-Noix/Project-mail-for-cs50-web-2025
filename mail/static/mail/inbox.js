@@ -62,7 +62,7 @@ function load_mailbox(mailbox) {
   document.querySelector('#email').style.display = 'none';
 
   // Show the mailbox name
-  document.querySelector('#emails-view').innerHTML = `<h3>${mailbox.charAt(0).toUpperCase() + mailbox.slice(1)}</h3>`;
+  // document.querySelector('#emails-view').innerHTML = `<h3>${mailbox.charAt(0).toUpperCase() + mailbox.slice(1)}</h3>`;
   
   fetch(`/emails/${mailbox}`)
   .then(response => response.json())
@@ -71,22 +71,36 @@ function load_mailbox(mailbox) {
     console.log(emails);
     // Create a new element div
     emails.forEach(element => {
-      const div = document.createElement('div');
-      // Adding all necessaury values from element
-      if (mailbox == 'inbox') {
-        div.append(element.sender, element.subject, element.timestamp);
-      } else if (mailbox == 'sent') {
-        div.append(element.recipients, element.subject, element.timestamp);
-      } else if (mailbox == 'archive' && element.archived === true) {
-        div.append(element.sender, element.subject, element.timestamp);
+      const tableRow = document.createElement('tr');
+      const email = document.createElement('td');
+      const subject = document.createElement('td');
+      const timestamp = document.createElement('td');
+
+      // Adding all necessaury values from element to the table in div #emails-view
+      if (mailbox == 'archive' && element.archived) {
+        email.innerHTML = element.sender;
+        subject.innerHTML = element.subject;
+        timestamp.innerHTML = element.timestamp;
+      } else if (!element.archived) {
+        if (mailbox == 'inbox') {
+          email.innerHTML = element.sender
+        } else {
+          email.innerHTML = element.recipients
+        }
+        subject.innerHTML = element.subject;
+        timestamp.innerHTML = element.timestamp;
       }
-      if (element.read === false) {
-        div.style.background = 'grey';
+      // Append all td to tableRow
+      tableRow.append(email, subject, timestamp);
+
+      // Change background color if email has been read
+      if (!element.read) {
+        tableRow.style.background = 'grey';
       }
       // Adds an event handler
-      div.onclick = () => load_email(element.id);
+      tableRow.onclick = () => load_email(element.id);
       // Add div to page
-      document.querySelector('#emails-view').append(div);
+      document.querySelector('#table-row').append(tableRow);
     });
   })
 }

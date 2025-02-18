@@ -2,13 +2,21 @@ textarea {
     min-height: 400px;
 }
 
-#emails-view > div {
-    font-size: 0.8em;
-    padding: 10px;
-    margin-bottom: 5px;
-    border: 1px solid black;
-    background: #fff;
+#emails-view table {
+    table-layout: fixed;
+    width: 100%;
+    border-spacing: 0;
+    padding: 0;
+    border-collapse: collapse;
+    box-sizing: border-box;
 }
+
+#emails-view table > tr {
+    user-select: none;
+    padding: 10px 10px;
+}
+
+
 
 /* Style for email div */
 #email > div {
