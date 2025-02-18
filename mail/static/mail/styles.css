@@ -1,3 +1,22 @@
 textarea {
     min-height: 400px;
 }
+
+#emails-view > div {
+    font-size: 0.8em;
+    padding: 10px;
+    margin-bottom: 5px;
+    border: 1px solid black;
+    background: #fff;
+}
+
+/* Style for email div */
+#email > div {
+    font-size: 1em;
+    padding: 10px;
+}
+#email > div:first-child{
+    border-bottom: 1px solid grey;
+    border-top: 1px solid grey;
+    margin-bottom: 5px;
+}
