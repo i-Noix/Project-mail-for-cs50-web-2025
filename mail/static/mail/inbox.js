@@ -104,13 +104,13 @@ function load_mailbox(mailbox) {
       tableRow.append(emailCell, subject, timestamp, action);
 
       // Change background color if email has been read
-      if (!email.read) {
+      if (email.read) {
         tableRow.style.backgroundColor = '#f2f6fc';
       }
       // Adds an event handler
       tableRow.onclick = () => {
         // Check if emails is unread mark the email as read
-        if (email.read && mailbox === 'inbox') {
+        if (!email.read && mailbox === 'inbox') {
           change_readValue(email.id, mailbox);
         } else {
           load_email(email.id, mailbox);
@@ -164,7 +164,7 @@ function change_readValue(email_id, mailbox) {
   fetch(`/emails/${email_id}`, {
     method: 'PUT',
     body: JSON.stringify({
-      read: false
+      read: true
     })
   })
   .then(() => load_email(email_id, mailbox));
